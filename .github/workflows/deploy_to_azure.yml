@@ -21,7 +21,7 @@ jobs:
     - name: Build and Push Docker Image
       uses: azure/docker-login@v1
       with:
-        login-server: <your-acr-login-server>.azurecr.io
+        login-server: docintelai.azurecr.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
