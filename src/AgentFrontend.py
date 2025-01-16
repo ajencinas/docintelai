@@ -86,7 +86,7 @@ def main_screen():
     # Overview of functionality
     st.markdown(
         """
-        Welcome to the Document Intelligence App. This tool allows you to:
+        Welcome to Document Intelligence. This tool allows you to:
         - **Add Documents**: Upload and process your documents.
         - **Query Documents**: Ask questions and retrieve information from your documents.
         - **Check Quality**: Evaluate the quality of document processing.
