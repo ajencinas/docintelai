@@ -20,7 +20,7 @@ Application to analyze and obtain insights from Rate Case Files and Utility Regu
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/docintelai.git
+    git clone https://github.com/ajencinas/docintelai.git
     ```
     
 2. Navigate to project
