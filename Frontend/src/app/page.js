@@ -140,7 +140,7 @@ export default function Home() {
             style={{ width: 48, height: 48, marginBottom: 16 }}
           />
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            Welcome to DocIntelAI
+            Welcome to Document AI
           </Typography>
         </Box>
         <Box mb={2}>
