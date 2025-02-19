@@ -12,6 +12,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      
+    - name: Set Image Tag
+      run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
     - name: Log in to Azure
       uses: azure/login@v1
@@ -28,6 +31,22 @@ jobs:
     - name: Build and Push Docker Image (Frontend)
       run: |
         cd Frontend
-        docker build -t docintelai.azurecr.io/frontend:latest .
-        docker push docintelai.azurecr.io/frontend:latest
+        docker build -t docintelai.azurecr.io/frontend:${{ env.IMAGE_TAG }} .
+        docker push docintelai.azurecr.io/frontend:${{ env.IMAGE_TAG }}
+
+    - name: Update Web App to Use New Image
+      run: |
+        az webapp config container set --name docintelai \
+          --resource-group DocIntelAI \
+          --docker-custom-image-name docintelai.azurecr.io/frontend:${{ env.IMAGE_TAG }}
+          
+    - name: Delete old images (keep latest 5)
+      run: |
+        OLD_IMAGES=$(az acr repository show-manifests --name docintelai \
+          --repository frontend --orderby timeAsc --output tsv --query "[].digest" | head -n -5)
+        
+        for DIGEST in $OLD_IMAGES; do
+       	  az acr repository delete --name docintelai --repository frontend --manifest $DIGEST --yes
+        done
+
 
