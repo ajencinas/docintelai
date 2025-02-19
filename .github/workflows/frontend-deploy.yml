@@ -47,7 +47,7 @@ jobs:
     - name: Delete Old Images (Keep Latest 5)
       run: |
         OLD_IMAGES=$(az acr repository show-manifests --name docintelai \
-          --repository frontend --orderby timeAsc --output tsv --query "[].digest" | head -n -5)
+          --repository frontend --orderby time_asc --output tsv --query "[].digest" | head -n -5)
 
         if [ -n "$OLD_IMAGES" ]; then
           echo "Deleting old images..."
