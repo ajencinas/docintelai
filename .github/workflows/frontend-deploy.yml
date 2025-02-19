@@ -1,0 +1,33 @@
+name: Deploy Frontend to Azure ACR
+
+on:
+  push:
+    branches:
+      - main  # Trigger on main branch push
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to Azure Container Registry (ACR)
+      uses: azure/docker-login@v1
+      with:
+        login-server: docintelai.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build and Push Docker Image (Frontend)
+      run: |
+        cd Frontend
+        docker build -t docintelai.azurecr.io/frontend:latest .
+        docker push docintelai.azurecr.io/frontend:latest
+
