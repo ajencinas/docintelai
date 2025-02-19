@@ -43,6 +43,17 @@ Application to analyze and obtain insights from Rate Case Files and Utility Regu
 
 TBC
 
+## Azure configuration
+
+Overall architecture is as follows:
+1. Documents stored in Azure Blob
+2. Vector FAISS stored in Azure Blob
+3. Document overview (summaries, summary vectors, plus metadata) stored in Azure Cosmos vCore to enable vector search
+4. Chats stored in Azure Cosmos MongoDB
+5. Redis used to quickly process metadata search
+
+For questions please email juanencinasmain@gmail.com
+
 ## Contributing
 
 Contributions are always welcome! To get started:
