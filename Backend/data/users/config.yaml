@@ -1,0 +1,14 @@
+cookie:
+  expiry_days: 30
+  key: keyauthentication
+  name: keyauthntication
+credentials:
+  usernames:
+    ajencinas:
+      email: ajencinas@gmail.com
+      name: Alfonso
+      password: $2b$12$4NbrcTZcfsE9aROkDxATJuFALAtHaynfXmsIW6PgGEB7zUUkkL4T.
+    random:
+      email: random
+      name: random
+      password: $2b$12$zFl1Gp73BvPSXzlGFjEA3ur6Wtggf5U5nG79DuAwMK8YzdmQSz4Eq

@@ -1,0 +1,35 @@
+# Overall
+*.log
+
+# Debug logs
+Backend/src/debug_log.txt
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# VSCode
+Backend/DocIntelAI.code-workspace
+Frontend/workspace.code-workspace
+
+# Virtual environments
+Backend/DocUI/
+
+# Node.js (Frontend)
+Frontend/node_modules/
+Frontend/.next/
+Frontend/Stale
+
+# Backend
+Backend/Stale
+
+# Exclude overall Stale files
+**/Stale/
+**/Stale*
+**/*old*
+
+# Environment files
+Backend/.env
+Frontend/.env.local
+Frontend/.env

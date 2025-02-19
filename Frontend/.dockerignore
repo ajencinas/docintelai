@@ -1,0 +1,32 @@
+# Ignore dependencies (they will be installed inside the container)
+node_modules
+
+# Build artifacts (Next.js, TypeScript, etc.)
+.next
+out
+dist
+
+# Ignore Git & environment files
+.git
+.gitignore
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Ignore Docker files (not needed inside the image)
+Dockerfile
+.dockerignore
+
+# Ignore editor & system files
+.vscode
+.idea
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+

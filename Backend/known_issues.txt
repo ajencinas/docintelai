@@ -1,0 +1,6 @@
+Frontend
+- Use of YAML as Authentication file limits concurrence
+- Lack of pagination in access to login files
+
+Backend
+- Manual Error logs to file vs. Logging

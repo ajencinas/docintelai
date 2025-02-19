@@ -1,0 +1,4 @@
+*.log
+src/debug_log.txt
+DocIntelAI.code-workspace
+DocUI/

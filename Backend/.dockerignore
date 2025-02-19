@@ -1,0 +1,30 @@
+# Ignore Git-related files
+.git
+.gitignore
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore local environment files
+*.env
+
+#Ignore stale files
+/src/Stale
+
+# Ignore IDE/editor project files
+.vscode/
+.idea/
+*.swp
+
+# Ignore logs and temp files
+*.log
+*.tmp
+
+# Ignore virtual environment
+/DocUI
+
+# Exclude Dockerfiles and .dockerignore (optional)
+Dockerfile
+.dockerignore
