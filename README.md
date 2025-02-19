@@ -64,4 +64,10 @@ Contributions are always welcome! To get started:
 4. Push to the branch (`git push origin feature-name`).
 5. Open a pull request.
 
+## Notes
+
+1. Package conflicts
+	
+	async-timeout==5.0.1 should be excluded from requirements.txt
+
 
