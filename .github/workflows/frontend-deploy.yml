@@ -40,13 +40,23 @@ jobs:
           --resource-group DocIntelAI \
           --docker-custom-image-name docintelai.azurecr.io/frontend:${{ env.IMAGE_TAG }}
           
-    - name: Delete old images (keep latest 5)
+    - name: Restart Web App to Apply Changes
+      run: |
+        az webapp restart --name docintelai --resource-group DocIntelAI
+
+    - name: Delete Old Images (Keep Latest 5)
       run: |
         OLD_IMAGES=$(az acr repository show-manifests --name docintelai \
           --repository frontend --orderby timeAsc --output tsv --query "[].digest" | head -n -5)
-        
-        for DIGEST in $OLD_IMAGES; do
-       	  az acr repository delete --name docintelai --repository frontend --manifest $DIGEST --yes
-        done
+
+        if [ -n "$OLD_IMAGES" ]; then
+          echo "Deleting old images..."
+          for DIGEST in $OLD_IMAGES; do
+            az acr repository delete --name docintelai --repository frontend --manifest $DIGEST --yes
+          done
+        else
+          echo "No old images to delete."
+        fi
+
 
 
