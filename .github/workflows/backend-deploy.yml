@@ -44,17 +44,25 @@ jobs:
       run: |
         az webapp restart --name docintelai-backend --resource-group DocIntelAI
 
-    - name: Delete Old Images (Keep Latest 5)
+    - name: Delete Old Backend Images (Keep Latest 5)
       run: |
-        OLD_IMAGES=$(az acr repository show-manifests --name docintelai \
+        OLD_IMAGES=$(az acr manifest list-metadata --name docintelai \
           --repository backend --orderby time_asc --output tsv --query "[].digest" | head -n -5)
 
-        if [[ ! -z "$OLD_IMAGES" ]]; then
+        if [ -n "$OLD_IMAGES" ]; then
           echo "Deleting old backend images..."
           while read -r DIGEST; do
-            echo "Deleting backend image digest: $DIGEST"
-            az acr repository delete --name docintelai --repository backend --manifest $DIGEST --yes
+            IMAGE_TAG=$(az acr manifest list-metadata --name docintelai \
+              --repository backend --query "[?digest=='$DIGEST'].tags[0]" --output tsv)
+
+            if [ -n "$IMAGE_TAG" ]; then
+              echo "Deleting backend image: backend:$IMAGE_TAG"
+              az acr repository delete --name docintelai --image backend:$IMAGE_TAG --yes
+            else
+              echo "Skipping digest $DIGEST (no tag found)"
+            fi
           done <<< "$OLD_IMAGES"
         else
           echo "No old backend images to delete."
         fi
+
