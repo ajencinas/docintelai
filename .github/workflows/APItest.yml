@@ -24,6 +24,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -39,13 +43,15 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-asyncio httpx python-dotenv
 
-      - name: Load Environment Variables
+      - name: Create .env File
         run: |
-          cp .env.example .env  # Ensure CI has the correct environment variables
+          echo "JWT_SECRET=${JWT_SECRET}" > .env
+          echo "MONGO_URI=${MONGO_URI}" >> .env
+          cat .env  # Debugging (remove this in production)
 
       - name: Start FastAPI
         run: |
-          nohup uvicorn ChatbotAPI:app --host 0.0.0.0 --port 8000 & 
+          nohup uvicorn ChatbotAPI:app --host 0.0.0.0 --port 8000 &
           sleep 5  # Give it time to start
 
       - name: Run Tests with pytest
