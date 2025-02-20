@@ -27,6 +27,11 @@ jobs:
     env:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       MONGO_URI: ${{ secrets.MONGO_URI }}
+      FAISS_INDEX_PATH: ${{ secrets.FAISS_INDEX_PATH }}
+      VECTOR_DB_API_KEY: ${{ secrets.VECTOR_DB_API_KEY }}
+      AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
+      AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+      RAG_API_KEY: ${{ secrets.RAG_API_KEY }}
 
     steps:
       - name: Checkout Code
@@ -40,20 +45,34 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-asyncio httpx python-dotenv
+          pip install -r Backend/requirements.txt
+          pip install pytest pytest-asyncio httpx python-dotenv uvicorn
 
-      - name: Create .env File
+      - name: Create .env File in Backend Directory
         run: |
-          echo "JWT_SECRET=${JWT_SECRET}" > .env
-          echo "MONGO_URI=${MONGO_URI}" >> .env
-          cat .env  # Debugging (remove this in production)
+          mkdir -p Backend  # Ensure the Backend directory exists
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" > Backend/.env
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> Backend/.env
+          echo "FAISS_INDEX_PATH=${{ secrets.FAISS_INDEX_PATH }}" >> Backend/.env
+          echo "VECTOR_DB_API_KEY=${{ secrets.VECTOR_DB_API_KEY }}" >> Backend/.env
+          echo "AZURE_STORAGE_ACCOUNT=${{ secrets.AZURE_STORAGE_ACCOUNT }}" >> Backend/.env
+          echo "AZURE_STORAGE_KEY=${{ secrets.AZURE_STORAGE_KEY }}" >> Backend/.env
+          echo "RAG_API_KEY=${{ secrets.RAG_API_KEY }}" >> Backend/.env
+          cat Backend/.env  # Debugging (remove later)
 
-      - name: Start FastAPI
+      - name: Start FastAPI Server from Backend
         run: |
-          nohup uvicorn ChatbotAPI:app --host 0.0.0.0 --port 8000 &
-          sleep 5  # Give it time to start
+          nohup uvicorn Backend.ChatbotAPI:app --host 0.0.0.0 --port 8000 & 
+          sleep 10  # Ensure FastAPI is up
 
-      - name: Run Tests with pytest
-        run: pytest --maxfail=1 --disable-warnings --tb=short
+      - name: Wait for API to be Ready
+        run: |
+          for i in {1..10}; do
+            curl --silent --fail http://localhost:8000/docs && break
+            echo "Waiting for FastAPI to start..."
+            sleep 3
+          done
+
+      - name: Run Tests with pytest (Backend Directory)
+        run: pytest Backend/tests --maxfail=1 --disable-warnings --tb=short
 
