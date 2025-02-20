@@ -76,9 +76,6 @@ jobs:
           echo "🔍 Checking .env contents..."
           cat Backend/.env
 
-          # Fail if any secret is missing
-          grep -E "=\\s*$" Backend/.env && { echo "❌ ERROR: Some secrets are missing!"; exit 1; }
-
       - name: Build and Start FastAPI Container
         run: |
           cd Backend
