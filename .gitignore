@@ -8,6 +8,7 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+debug_log*
 
 # VSCode
 Backend/DocIntelAI.code-workspace
