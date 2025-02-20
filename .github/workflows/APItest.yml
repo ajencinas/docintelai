@@ -76,7 +76,7 @@ jobs:
 
       - name: Start FastAPI Server
         run: |
-          cd Backend/src/python
+          cd Backend/src
           nohup python ChatbotAPI.py &
           sleep 10  # Give it time to start
 
