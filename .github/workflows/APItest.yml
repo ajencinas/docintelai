@@ -32,6 +32,9 @@ jobs:
       AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
       AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
       RAG_API_KEY: ${{ secrets.RAG_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}  # ✅ Add this if OpenAI is used
+      REDIS_URL: ${{ secrets.REDIS_URL }}  # ✅ Add Redis URL if caching is used
+      LOG_LEVEL: "INFO"  # ✅ Example of a non-secret env variable
 
     steps:
       - name: Checkout Code
@@ -45,7 +48,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio httpx python-dotenv
+          pip install pytest pytest-asyncio httpx python-dotenv uvicorn PyJWT
 
       - name: Create .env File in Backend Directory
         run: |
@@ -57,6 +60,9 @@ jobs:
           echo "AZURE_STORAGE_ACCOUNT=${{ secrets.AZURE_STORAGE_ACCOUNT }}" >> Backend/.env
           echo "AZURE_STORAGE_KEY=${{ secrets.AZURE_STORAGE_KEY }}" >> Backend/.env
           echo "RAG_API_KEY=${{ secrets.RAG_API_KEY }}" >> Backend/.env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> Backend/.env
+          echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> Backend/.env
+          echo "LOG_LEVEL=INFO" >> Backend/.env  # ✅ Example of a non-secret setting
           cat Backend/.env  # Debugging (remove later)
 
       - name: Build and Start FastAPI Container
@@ -65,6 +71,8 @@ jobs:
           docker build -t backend-test .
           docker run -d -p 8000:8000 --env-file .env --name backend-container backend-test
           sleep 10  # Ensure FastAPI is fully running
+          echo "✅ FastAPI container logs:"
+          docker logs backend-container
 
       - name: Wait for API to be Ready
         run: |
@@ -75,6 +83,8 @@ jobs:
           done
 
       - name: Run Tests with pytest (Backend Directory)
-        run: pytest Backend/tests --maxfail=1 --disable-warnings --tb=short
+        run: |
+          cd Backend
+          pytest tests --maxfail=1 --disable-warnings --tb=short
 
 
