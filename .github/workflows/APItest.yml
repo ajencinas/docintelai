@@ -45,12 +45,11 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r Backend/requirements.txt
-          pip install pytest pytest-asyncio httpx python-dotenv uvicorn
+          pip install pytest pytest-asyncio httpx python-dotenv
 
       - name: Create .env File in Backend Directory
         run: |
-          mkdir -p Backend  # Ensure the Backend directory exists
+          mkdir -p Backend  # Ensure Backend directory exists
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" > Backend/.env
           echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> Backend/.env
           echo "FAISS_INDEX_PATH=${{ secrets.FAISS_INDEX_PATH }}" >> Backend/.env
@@ -60,10 +59,12 @@ jobs:
           echo "RAG_API_KEY=${{ secrets.RAG_API_KEY }}" >> Backend/.env
           cat Backend/.env  # Debugging (remove later)
 
-      - name: Start FastAPI Server from Backend
+      - name: Build and Start FastAPI Container
         run: |
-          nohup uvicorn Backend.ChatbotAPI:app --host 0.0.0.0 --port 8000 & 
-          sleep 10  # Ensure FastAPI is up
+          cd Backend
+          docker build -t backend-test .
+          docker run -d -p 8000:8000 --env-file .env --name backend-container backend-test
+          sleep 10  # Ensure FastAPI is fully running
 
       - name: Wait for API to be Ready
         run: |
@@ -75,4 +76,5 @@ jobs:
 
       - name: Run Tests with pytest (Backend Directory)
         run: pytest Backend/tests --maxfail=1 --disable-warnings --tb=short
+
 
